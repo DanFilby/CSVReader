@@ -11,46 +11,8 @@ void PersonFileReader::Sort()
 {
 	//sort by last names
 	std::sort(mCurCSV.csvContents.begin(), mCurCSV.csvContents.end(), [](vector<string>& a, vector<string>& b) {
-		return a[1] < b[1]; }
+		return (a[1] == b[1])? a[0] < b[0] : a[1] < b[1]; }
 	);
-
-	//create list of row with the same last name
-	vector<vector<vector<string>>> listOfSameLastNames;
-	vector<vector<string>> listBuf;
-
-	string prevLastName = "";
-
-	for (auto row : mCurCSV.csvContents) {
-		if (prevLastName.empty() || prevLastName != row[1]) {
-			listOfSameLastNames.push_back(listBuf);
-
-			listBuf.clear();
-			listBuf.push_back(row);
-			prevLastName = row[1];
-		}
-		else {
-			listBuf.push_back(row);
-		}
-	}
-	listOfSameLastNames.push_back(listBuf);
-
-	//sort lists of mathcing last names by first name
-	for (auto& lastNameList : listOfSameLastNames) {
-		std::sort(lastNameList.begin(), lastNameList.end(), [](vector<string>& a, vector<string>& b) {
-			return a[0] < b[0]; }
-		);
-	}
-
-	//new vector with sorted values
-	vector<vector<string>> sortedNames;
-
-	for (auto lastNameList : listOfSameLastNames) {
-		for (auto row : lastNameList) {
-			sortedNames.push_back(row);
-		}
-	}
-
-	mCurCSV = CSV(sortedNames);
 }
 
 void PersonFileReader::PrintPersons()
